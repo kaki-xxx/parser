@@ -7,7 +7,7 @@ $ cargo run '1+2*(1+3)'
 9
 ```
 
-# Support
+## Support
 
 - add
 - sub
