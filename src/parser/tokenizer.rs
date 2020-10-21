@@ -33,26 +33,26 @@ impl Token {
 
 pub struct Tokenizer {
     tokens: Vec<Token>,
-    cur: usize,
+    pos: usize,
 }
 
 impl Tokenizer {
     pub fn new(input: String) -> Self {
         let mut ret = Self {
             tokens: Vec::new(),
-            cur: 0,
+            pos: 0,
         };
         ret.tokenize(input.chars().collect());
         ret
     }
 
     pub fn comsume(&mut self, token_kind: TokenKind) -> Option<Token> {
-        if self.cur >= self.tokens.len() {
+        if self.pos >= self.tokens.len() {
             return None;
         }
-        if self.tokens[self.cur].token_kind == token_kind {
-            let ret = Some(self.tokens[self.cur]);
-            self.cur += 1;
+        if self.tokens[self.pos].token_kind == token_kind {
+            let ret = Some(self.tokens[self.pos]);
+            self.pos += 1;
             ret
         } else {
             None
@@ -60,12 +60,12 @@ impl Tokenizer {
     }
     
     pub fn expect(&mut self, token_kind: TokenKind) -> Token {
-        if self.cur >= self.tokens.len() {
+        if self.pos >= self.tokens.len() {
             panic!("syntax error");
         }
-        if self.tokens[self.cur].token_kind == token_kind {
-            let ret = self.tokens[self.cur];
-            self.cur += 1;
+        if self.tokens[self.pos].token_kind == token_kind {
+            let ret = self.tokens[self.pos];
+            self.pos += 1;
             ret
         } else {
             panic!("syntax error");
@@ -73,18 +73,18 @@ impl Tokenizer {
     }
 
     pub fn at_eof(&mut self) -> bool {
-        self.cur >= self.tokens.len()
+        self.pos >= self.tokens.len()
     }
 
     fn tokenize(&mut self, input: Vec<char>) {
-        let mut cur = 0;
-        while cur < input.len() {
-            while cur < input.len() && input[cur].is_ascii_whitespace() {
-                cur += 1;
+        let mut pos = 0;
+        while pos < input.len() {
+            while pos < input.len() && input[pos].is_ascii_whitespace() {
+                pos += 1;
             }
-            let token = match input[cur] {
+            let token = match input[pos] {
                 '+' | '-' | '*' | '/' | '(' | ')' => {
-                    let ret = match input[cur] {
+                    let ret = match input[pos] {
                         '+' => Token::new(TokenKind::Plus),
                         '-' => Token::new(TokenKind::Minus),
                         '*' => Token::new(TokenKind::Times),
@@ -93,14 +93,14 @@ impl Tokenizer {
                         ')' => Token::new(TokenKind::RParen),
                         _ => unreachable!(),
                     };
-                    cur += 1;
+                    pos += 1;
                     ret
                 }
                 '0'..='9' => {
                     let mut ret = 0;
-                    while cur < input.len() && input[cur].is_ascii_digit() {
-                        ret = ret * 10 + input[cur] as i32 - '0' as i32;
-                        cur += 1;
+                    while pos < input.len() && input[pos].is_ascii_digit() {
+                        ret = ret * 10 + input[pos] as i32 - '0' as i32;
+                        pos += 1;
                     }
                     Token::new_num(ret)
                 },
