@@ -3,13 +3,13 @@ pub mod tokenizer;
 use tokenizer::*;
 
 pub struct Parser {
-    tokenizer: tokenizer::Tokenizer,
+    tokenizer: Tokenizer,
 }
 
 impl Parser {
     pub fn new(input: String) -> Self {
         Self {
-            tokenizer: tokenizer::Tokenizer::new(input)
+            tokenizer: Tokenizer::new(input)
         }
     }
 
